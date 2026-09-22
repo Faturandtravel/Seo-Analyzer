@@ -10,7 +10,7 @@ export const DailyProgressCard = ({
   progress = 85,
   onViewScoreChange,
   statusLabel = 'Optimal SEO',
-}) => {
+}: DailyProgressCardProps) => {
   const totalTicks = 26;
   const activeTicksCount = Math.round((progress / 100) * totalTicks);
 
