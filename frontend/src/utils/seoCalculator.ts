@@ -97,47 +97,47 @@ export function getSeoRecommendations(audit: AuditResult): string[] {
   const recommendations: string[] = [];
 
   if (audit.status_code !== 200) {
-    recommendations.push(`HTTP Status ${audit.status_code}. Pastikan server mengembalikan 200 OK.`);
+    recommendations.push(`HTTP Status ${audit.status_code}. Ensure the web server returns a 200 OK status code.`);
   }
 
   if (audit.response_time_ms > 500) {
-    recommendations.push(`Response time ${audit.response_time_ms}ms. Pertimbangkan caching, kompresi Gzip/Brotli, atau CDN.`);
+    recommendations.push(`Server response time is ${audit.response_time_ms}ms. Optimize with edge caching, Brotli compression, or a global CDN.`);
   } else {
-    recommendations.push(`Kecepatan respon server sangat baik (${audit.response_time_ms}ms).`);
+    recommendations.push(`Server response latency is excellent (${audit.response_time_ms}ms), well within Google Web Vitals targets.`);
   }
 
   if (!audit.title) {
-    recommendations.push('Tag <title> tidak ditemukan! Tambahkan judul halaman 30-60 karakter.');
+    recommendations.push('Missing <title> tag! Add a concise, keyword-rich title between 30 and 60 characters.');
   }
 
   if (!audit.description) {
-    recommendations.push('Meta description kosong! Tambahkan ringkasan konten 50-160 karakter untuk CTR Google.');
+    recommendations.push('Missing meta description! Add a summary between 50 and 160 characters to optimize search snippet CTR.');
   }
 
   if (audit.h1_count === 0) {
-    recommendations.push('Tidak ada tag <h1>. Buat tepat 1 tag H1 sebagai judul topik utama.');
+    recommendations.push('No <h1> tag detected. Add exactly one H1 tag to establish the main topic of this page.');
   } else if (audit.h1_count > 1) {
-    recommendations.push(`Ditemukan ${audit.h1_count} tag <h1>. Direkomendasikan hanya 1 tag H1 per halaman.`);
+    recommendations.push(`Found ${audit.h1_count} <h1> tags. It is recommended to use only 1 primary H1 heading per page.`);
   }
 
   if (!audit.canonical) {
-    recommendations.push('Tag canonical belum ada. Tambahkan <link rel="canonical" href="..."> untuk cegah duplikasi konten.');
+    recommendations.push('Canonical tag is missing. Add <link rel="canonical" href="..."> to prevent duplicate content indexing.');
   }
 
   if (audit.images_missing_alt && audit.images_missing_alt > 0) {
-    recommendations.push(`Ada ${audit.images_missing_alt} dari ${audit.images_total} gambar yang belum memiliki atribut alt text.`);
+    recommendations.push(`${audit.images_missing_alt} of ${audit.images_total} images are missing descriptive alt text.`);
   }
 
   if (!audit.has_viewport) {
-    recommendations.push('Tag <meta name="viewport"> tidak terdeteksi! Website mungkin tidak lulus uji Mobile-First Indexing Google.');
+    recommendations.push('Missing <meta name="viewport"> tag! This site may fail Google Mobile-First Indexing checks.');
   }
 
   if (!audit.og_image) {
-    recommendations.push('Tag og:image belum ada. Thumbnail akan kosong saat link website dibagikan di media sosial atau WhatsApp.');
+    recommendations.push('Missing og:image tag. Add an Open Graph preview image for rich link shares on social networks.');
   }
 
   if ((audit.word_count || 0) < 150) {
-    recommendations.push(`Jumlah kata (${audit.word_count || 0} kata) tergolong tipis (thin content). Tambahkan konten informatif.`);
+    recommendations.push(`Body content is low (${audit.word_count || 0} words). Expand with useful, relevant text to avoid thin content penalties.`);
   }
 
   return recommendations;

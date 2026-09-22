@@ -56,7 +56,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	// Ambil parameter URL dari query string: /api/audit?url=https://...
 	targetURL := r.URL.Query().Get("url")
 	if targetURL == "" {
-		http.Error(w, `{"error": "Parameter URL dibutuhkan"}`, http.StatusBadRequest)
+		http.Error(w, `{"error": "URL parameter is required"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -68,7 +68,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		json.NewEncoder(w).Encode(AuditResponse{
 			URL:   targetURL,
-			Error: fmt.Sprintf("Format URL tidak valid: %v", err),
+			Error: fmt.Sprintf("Invalid URL format: %v", err),
 		})
 		return
 	}
@@ -84,7 +84,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		json.NewEncoder(w).Encode(AuditResponse{
 			URL:   targetURL,
-			Error: fmt.Sprintf("Gagal membuat HTTP request: %v", err),
+			Error: fmt.Sprintf("Failed to create HTTP request: %v", err),
 		})
 		return
 	}
@@ -95,7 +95,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		json.NewEncoder(w).Encode(AuditResponse{
 			URL:   targetURL,
-			Error: fmt.Sprintf("Gagal mengakses URL: %v", err),
+			Error: fmt.Sprintf("Failed to reach target URL: %v", err),
 		})
 		return
 	}
@@ -108,7 +108,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		json.NewEncoder(w).Encode(AuditResponse{
 			URL:   targetURL,
-			Error: "Gagal membaca konten payload halaman",
+			Error: "Failed to read response body",
 		})
 		return
 	}
@@ -118,7 +118,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		json.NewEncoder(w).Encode(AuditResponse{
 			URL:   targetURL,
-			Error: "Gagal membaca konten HTML",
+			Error: "Failed to parse HTML document",
 		})
 		return
 	}
@@ -215,7 +215,7 @@ func handleAudit(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/api/audit", handleAudit)
 
-	fmt.Println("Backend Go berjalan di http://localhost:8080")
+	fmt.Println("Go backend server running at http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Printf("Error: %v\n", err)
 	}

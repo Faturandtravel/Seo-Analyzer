@@ -24,48 +24,48 @@ export const MetricCards = ({ auditResult, onCardClick }: MetricCardsProps) => {
   const cardsToDisplay: MetricCardData[] = [
     {
       id: 'status',
-      title: 'HTTP Status & SSL',
-      value: statusCode,
+      title: 'SERVER STATUS & SSL',
+      value: `${statusCode}`,
       change: isHealthy ? '200 OK' : 'Error',
       isPositive: isHealthy,
-      subtext: auditResult?.has_ssl ? 'HTTPS Enkripsi Aktif' : 'HTTP Biasa (Non-SSL)',
+      subtext: auditResult?.has_ssl !== false ? 'HTTPS TLS Encrypted (Secure)' : 'Insecure HTTP (No SSL)',
       progressPercent: isHealthy ? 100 : 20,
       platform: 'status',
     },
     {
       id: 'speed',
-      title: 'Respon & Ukuran Payload',
+      title: 'RESPONSE TIME & TTFB',
       value: `${responseTime} ms`,
-      change: responseTime < 400 ? 'Cepat' : 'Lambat',
-      isPositive: responseTime < 500,
-      subtext: `Ukuran Dokumen: ${pageSizeKb} KB`,
+      change: responseTime < 300 ? 'Fast' : responseTime < 600 ? 'Moderate' : 'Slow',
+      isPositive: responseTime < 600,
+      subtext: `Payload: ${pageSizeKb} KB • Target: <300ms`,
       progressPercent: Math.max(20, Math.min(100, Math.round(100 - responseTime / 15))),
       platform: 'speed',
     },
     {
       id: 'headings',
-      title: 'Hierarki Heading (H1 & H2)',
+      title: 'H1 & HEADING STRUCTURE',
       value: `${h1Count} H1`,
-      change: h1Count === 1 ? 'Optimal' : 'Perbaiki',
+      change: h1Count === 1 ? '1 H1 (Optimal)' : h1Count === 0 ? 'Missing H1' : `${h1Count} H1 (Multiple)`,
       isPositive: h1Count === 1,
-      subtext: h2Count > 0 ? `${h2Count} Sub-heading H2 terdeteksi` : 'Tidak ada tag H2',
+      subtext: h2Count > 0 ? `${h2Count} H2 subheadings found` : 'No H2 subheadings found',
       progressPercent: h1Count === 1 ? 100 : 40,
       platform: 'heading',
     },
     {
       id: 'images',
-      title: 'Audit Gambar & Alt Text',
-      value: `${imagesTotal} Gambar`,
-      change: imagesMissing === 0 ? 'Semua Alt OK' : `${imagesMissing} Kurang Alt`,
+      title: 'IMAGE ALT ATTRIBUTES',
+      value: `${imagesTotal} Images`,
+      change: imagesMissing === 0 ? '100% Alt Tags' : `${imagesMissing} Missing Alt`,
       isPositive: imagesMissing === 0,
-      subtext: imagesTotal > 0 ? `${imagesAltOk}/${imagesTotal} gambar ber-alt` : 'Tidak ada gambar',
+      subtext: imagesTotal > 0 ? `${imagesAltOk}/${imagesTotal} images with alt text` : 'No images on page',
       progressPercent: imagesTotal > 0 ? Math.round((imagesAltOk / imagesTotal) * 100) : 100,
       platform: 'image',
     },
   ];
 
   return (
-    <div className="metrics-grid">
+    <div className="vercel-metrics-grid">
       {cardsToDisplay.map((card) => (
         <MetricCardItem
           key={card.id}

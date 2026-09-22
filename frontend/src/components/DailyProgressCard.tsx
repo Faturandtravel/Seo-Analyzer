@@ -1,4 +1,4 @@
-import { ArrowUpRight, CheckCircle2 } from 'lucide-react';
+import { ArrowUpRight, CheckCircle2, ShieldCheck, AlertTriangle } from 'lucide-react';
 
 interface DailyProgressCardProps {
   progress?: number;
@@ -11,80 +11,113 @@ export const DailyProgressCard = ({
   onViewScoreChange,
   statusLabel = 'Optimal SEO',
 }: DailyProgressCardProps) => {
-  const totalTicks = 26;
-  const activeTicksCount = Math.round((progress / 100) * totalTicks);
+  const isOptimal = progress >= 80;
+  const isFair = progress >= 50 && progress < 80;
+
+  // Arc calculation for SVG circular gauge
+  const radius = 62;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
-    <div className="dashboard-card daily-progress-card">
+    <div className="vercel-card vercel-score-gauge-card">
       {/* Header */}
-      <div className="card-header">
-        <h3 className="card-title">SEO Health Score</h3>
+      <div className="vercel-card-header">
+        <div className="vercel-card-title-group">
+          <div className="vercel-card-icon-tag">
+            <ShieldCheck size={15} />
+          </div>
+          <div>
+            <h3 className="vercel-card-title">SEO Health Index</h3>
+            <p className="vercel-card-sub">Weighted 0–100 search engine readiness</p>
+          </div>
+        </div>
+
         <button
-          className="card-icon-link"
-          title="Lihat Detail Audit"
+          type="button"
+          className="vercel-icon-action-btn"
+          title="Inspect score breakdown"
           onClick={onViewScoreChange}
         >
-          <ArrowUpRight size={18} />
+          <ArrowUpRight size={15} />
         </button>
       </div>
 
-      {/* Radial Segmented Arc Gauge */}
-      <div className="progress-gauge-wrapper">
-        <svg viewBox="0 0 200 125" className="segmented-gauge-svg">
-          {Array.from({ length: totalTicks }).map((_, index) => {
-            // Arc spans from 180 degrees (left) to 0 degrees (right)
-            const angleDeg = 180 - (index / (totalTicks - 1)) * 180;
-            const angleRad = (angleDeg * Math.PI) / 180;
+      {/* Modern Circular Vercel Gauge */}
+      <div className="vercel-gauge-center">
+        <div className="vercel-circle-gauge-wrapper">
+          <svg className="vercel-circle-svg" width="150" height="150" viewBox="0 0 150 150">
+            {/* Background Track */}
+            <circle
+              cx="75"
+              cy="75"
+              r={radius}
+              className="vercel-gauge-bg-circle"
+              strokeWidth="9"
+              fill="none"
+            />
+            {/* Active Progress Fill */}
+            <circle
+              cx="75"
+              cy="75"
+              r={radius}
+              className={`vercel-gauge-active-circle ${isOptimal ? 'optimal' : isFair ? 'fair' : 'poor'}`}
+              strokeWidth="9"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              fill="none"
+              transform="rotate(-90 75 75)"
+            />
+          </svg>
 
-            const cx = 100;
-            const cy = 105;
-            const rInner = 68;
-            const rOuter = 88;
+          {/* Centered Big Value */}
+          <div className="vercel-gauge-text-overlay">
+            <span className="vercel-gauge-big-num font-mono">{progress}</span>
+            <span className="vercel-gauge-denom font-mono">/100</span>
+          </div>
+        </div>
 
-            const x1 = cx + rInner * Math.cos(angleRad);
-            const y1 = cy - rInner * Math.sin(angleRad);
-            const x2 = cx + rOuter * Math.cos(angleRad);
-            const y2 = cy - rOuter * Math.sin(angleRad);
-
-            const isActive = index < activeTicksCount;
-
-            return (
-              <line
-                key={index}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke={isActive ? '#22c55e' : '#e2e8f0'}
-                strokeWidth={4}
-                strokeLinecap="round"
-                className="gauge-tick"
-                style={{
-                  transition: 'stroke 0.4s ease',
-                }}
-              />
-            );
-          })}
-        </svg>
-
-        {/* Center Percentage Display */}
-        <div className="gauge-center-content">
-          <span className="gauge-number">{progress}%</span>
-          <span className="gauge-sub-badge">
-            <CheckCircle2 size={11} className="text-green-500" />
-            <span>{statusLabel}</span>
-          </span>
+        <div className="vercel-gauge-status-badge">
+          {isOptimal ? (
+            <span className="status-pill-optimal">
+              <CheckCircle2 size={13} className="text-emerald-400" />
+              <span>{statusLabel}</span>
+            </span>
+          ) : (
+            <span className="status-pill-warning">
+              <AlertTriangle size={13} className="text-amber-400" />
+              <span>{statusLabel}</span>
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Bottom Footer Link */}
-      <div className="daily-progress-footer">
+      {/* Breakdown mini items */}
+      <div className="vercel-score-factors">
+        <div className="score-factor-row">
+          <span className="factor-name">Status & TLS/SSL</span>
+          <span className="factor-val text-emerald-400 font-mono">100%</span>
+        </div>
+        <div className="score-factor-row">
+          <span className="factor-name">Meta & Heading</span>
+          <span className="factor-val font-mono">{progress >= 70 ? 'Passed' : 'Needs Fix'}</span>
+        </div>
+        <div className="score-factor-row">
+          <span className="factor-name">Payload & Speed</span>
+          <span className="factor-val font-mono">{progress >= 80 ? 'Fast' : 'Average'}</span>
+        </div>
+      </div>
+
+      {/* Footer Action */}
+      <div className="vercel-card-footer">
         <button
-          className="view-score-link"
+          type="button"
+          className="vercel-card-footer-btn"
           onClick={onViewScoreChange}
         >
-          <span>View Score Breakdown</span>
-          <ArrowUpRight size={14} />
+          <span>View Diagnostics Log</span>
+          <ArrowUpRight size={13} />
         </button>
       </div>
     </div>

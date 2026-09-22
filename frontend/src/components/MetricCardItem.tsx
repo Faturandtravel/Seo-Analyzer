@@ -1,4 +1,4 @@
-import { GoogleIcon, SlackIcon, GmailIcon, StatusIcon, SpeedIcon, HeadingIcon, ImageIcon, LinkIcon } from './icons/BrandIcons';
+import { Globe, Zap, Type, Image as ImageIcon, ShieldCheck } from 'lucide-react';
 import type { MetricCardData } from '../types';
 
 interface MetricCardItemProps {
@@ -9,57 +9,49 @@ interface MetricCardItemProps {
 export const MetricCardItem = ({ card, onClick }: MetricCardItemProps) => {
   const renderIcon = () => {
     switch (card.platform) {
-      case 'google':
-        return <GoogleIcon size={22} />;
-      case 'slack':
-        return <SlackIcon size={22} />;
-      case 'gmail':
-        return <GmailIcon size={22} />;
       case 'status':
-        return <StatusIcon size={22} />;
+        return <ShieldCheck size={16} className="text-zinc-400" />;
       case 'speed':
-        return <SpeedIcon size={22} />;
+        return <Zap size={16} className="text-zinc-400" />;
       case 'heading':
-        return <HeadingIcon size={22} />;
+        return <Type size={16} className="text-zinc-400" />;
       case 'image':
-        return <ImageIcon size={22} />;
-      case 'link':
-        return <LinkIcon size={22} />;
+        return <ImageIcon size={16} className="text-zinc-400" />;
       default:
-        return <GoogleIcon size={22} />;
+        return <Globe size={16} className="text-zinc-400" />;
     }
   };
 
   return (
-    <div className="metric-card" onClick={onClick}>
-      {/* Top Header with title and platform logo */}
-      <div className="metric-card-header">
-        <h3 className="metric-card-title">{card.title}</h3>
-        <div className="metric-card-icon">{renderIcon()}</div>
+    <div className="vercel-metric-card" onClick={onClick} role="button" tabIndex={0}>
+      {/* Top Header */}
+      <div className="vercel-metric-header">
+        <span className="vercel-metric-label">{card.title}</span>
+        <div className="vercel-metric-icon-box">{renderIcon()}</div>
       </div>
 
-      {/* Value and Percentage Badge */}
-      <div className="metric-card-body">
-        <div className="metric-value-row">
-          <span className="metric-value">{card.value}</span>
-          <span className={`metric-badge ${card.isPositive ? 'positive' : 'negative'}`}>
-            {card.change}
+      {/* Main Metric Value & Status Pill */}
+      <div className="vercel-metric-main">
+        <div className="vercel-metric-value-row">
+          <span className="vercel-metric-val font-mono">{card.value}</span>
+          <span className={`vercel-metric-pill ${card.isPositive ? 'good' : 'warning'}`}>
+            <span className={`vercel-dot ${card.isPositive ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+            <span>{card.change}</span>
           </span>
         </div>
 
-        {/* Subtext info */}
-        <p className="metric-subtext">{card.subtext}</p>
+        <p className="vercel-metric-subtext">{card.subtext}</p>
       </div>
 
-      {/* Bottom Progress Bar & Percentage */}
-      <div className="metric-progress-container">
-        <div className="metric-progress-track">
+      {/* Vercel Micro Progress Track */}
+      <div className="vercel-metric-footer">
+        <div className="vercel-metric-track">
           <div
-            className="metric-progress-fill"
+            className={`vercel-metric-fill ${card.isPositive ? 'good' : 'warning'}`}
             style={{ width: `${Math.min(100, Math.max(0, card.progressPercent))}%` }}
           />
         </div>
-        <span className="metric-progress-label">{card.progressPercent}%</span>
+        <span className="vercel-metric-percent font-mono">{card.progressPercent}%</span>
       </div>
     </div>
   );
