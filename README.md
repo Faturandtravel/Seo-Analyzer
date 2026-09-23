@@ -8,7 +8,7 @@ A fast, zero-dependency **Chrome/Edge browser extension** that instantly audits 
 
 ### Real-Time DOM Analysis
 
-Ketika extension dibuka, **Content Script** langsung membaca DOM halaman aktif tanpa perlu request ke server eksternal:
+When the extension is opened, the **Content Script** reads the DOM of the active page directly without making any requests to an external server:
 
 - **Meta & Header Tags**: Checks `<title>`, `<meta name="description">`, `<meta name="robots">`, and canonical URLs (`<link rel="canonical">`).
 - **Heading Structure**: Tracks hierarchy and usage of `<h1>`, `<h2>`, and `<h3>` tags.
@@ -20,58 +20,58 @@ Ketika extension dibuka, **Content Script** langsung membaca DOM halaman aktif t
 
 ### Animated Score Overview
 
-- **Animated score ring** (0–100) dengan color grading: A+ / A / B / C / D / F
+- **Animated score ring** (0–100) with color grading: A+ / A / B / C / D / F
 - Quick-glance badges: HTTPS, Mobile, Internal links
-- 6-item SEO checklist langsung saat popup dibuka
+- 6-item SEO checklist displayed immediately when the popup opens
 
 ### AI Recommendations (Auto-Generate)
 
-- Laporan rekomendasi **dibuat otomatis** setiap kali popup dibuka
-- Rekomendasi prioritized: **Kritis** → **Optimasi** → **Lulus**
-- Code snippet siap pakai yang bisa langsung di-copy
-- Filter per kategori prioritas
-- Support **DeepSeek API** untuk analisis mendalam (opsional)
+- Recommendation report **generated automatically** every time the popup is opened
+- Prioritized recommendations: **Critical** → **Optimization** → **Passed**
+- Ready-to-use code snippets that can be copied instantly
+- Filter by priority category
+- Supports **DeepSeek API** for in-depth analysis (optional)
 
 ### AI Chat Copilot
 
-- Chat kontekstual berbasis data halaman aktif
+- Contextual chat based on active page data
 - Quick prompt suggestions
-- Mode lokal (heuristik) tanpa API key, atau DeepSeek API jika dikonfigurasi
+- Local mode (heuristic) without an API key, or DeepSeek API if configured
 
 ---
 
 ## Tech Stack
 
-| Layer            | Teknologi                                          |
-| ---------------- | -------------------------------------------------- |
-| **Platform**     | Chrome Extension — Manifest V3                     |
-| **UI Framework** | React 18 + TypeScript                              |
-| **Build Tool**   | Vite 6 (multi-entry: popup + content + background) |
-| **Icons**        | Lucide React                                       |
-| **Styling**      | Vanilla CSS — Dark Glassmorphism                   |
-| **AI Engine**    | Heuristik lokal bawaan / DeepSeek API (opsional)   |
-| **DOM Reader**   | Chrome Extension Content Script API                |
+| Layer            | Technology                                          |
+| ---------------- | --------------------------------------------------- |
+| **Platform**     | Chrome Extension — Manifest V3                      |
+| **UI Framework** | React 18 + TypeScript                               |
+| **Build Tool**   | Vite 6 (multi-entry: popup + content + background)  |
+| **Icons**        | Lucide React                                        |
+| **Styling**      | Vanilla CSS — Dark Glassmorphism                    |
+| **AI Engine**    | Built-in local heuristic / DeepSeek API (optional)  |
+| **DOM Reader**   | Chrome Extension Content Script API                 |
 
-> **Tidak ada backend server.** Analisis DOM dilakukan langsung di browser oleh Content Script — menggantikan kebutuhan server Go sepenuhnya.
+> **No backend server.** DOM analysis is performed directly in the browser by the Content Script — completely replacing the need for a Go server.
 
 ---
 
-## Arsitektur
+## Architecture
 
 ```
-Klik ikon extension
+Click extension icon
        ↓
 Content Script (content.js)
-membaca DOM halaman aktif secara langsung
+reads the active page DOM directly
        ↓
 seoCalculator.ts
-menghitung skor SEO (0-100) secara lokal
+calculates SEO score (0-100) locally
        ↓
 deepseekService.ts
-generate rekomendasi (heuristik lokal atau DeepSeek API)
+generates recommendations (local heuristic or DeepSeek API)
        ↓
 React Popup UI
-menampilkan hasil dalam < 1 detik
+displays results in < 1 second
 ```
 
 ---
@@ -80,13 +80,13 @@ menampilkan hasil dalam < 1 detik
 
 ```text
 seo-analyzer/
-└── extension/                      ← Seluruh kode extension
+└── extension/                      ← All extension code
     ├── manifest.json               ← Chrome Extension Manifest V3
     ├── popup.html                  ← Popup UI entry point
     ├── vite.config.ts              ← Multi-entry build config
     ├── package.json
     ├── icons/                      ← Extension icons (16, 48, 128px)
-    ├── dist/                       ← Build output (load ke Chrome)
+    ├── dist/                       ← Build output (load into Chrome)
     │   ├── manifest.json
     │   ├── popup.html
     │   ├── popup.js
@@ -123,8 +123,8 @@ seo-analyzer/
 
 ### Prerequisites
 
-- **Node.js** 18+ dan **npm**
-- **Chrome** atau **Edge** browser
+- **Node.js** 18+ and **npm**
+- **Chrome** or **Edge** browser
 
 ### 1. Install Dependencies
 
@@ -139,20 +139,20 @@ npm install
 npm run build
 ```
 
-Output akan tersedia di `extension/dist/`.
+The output will be available in `extension/dist/`.
 
-### 3. Load ke Chrome / Edge
+### 3. Load into Chrome / Edge
 
-1. Buka `chrome://extensions` (atau `edge://extensions`)
-2. Aktifkan **"Developer mode"** (toggle pojok kanan atas)
-3. Klik **"Load unpacked"**
-4. Pilih folder: `extension/dist/`
+1. Open `chrome://extensions` (or `edge://extensions`)
+2. Enable **"Developer mode"** (toggle in the top-right corner)
+3. Click **"Load unpacked"**
+4. Select the folder: `extension/dist/`
 
-### 4. Gunakan Extension
+### 4. Use the Extension
 
-1. Buka website apapun di browser
-2. Klik ikon **SEO Analyzer AI** di toolbar
-3. Extension **langsung menganalisis** halaman — tidak perlu input apapun!
+1. Open any website in your browser
+2. Click the **SEO Analyzer AI** icon in the toolbar
+3. The extension **instantly analyzes** the page — no input required!
 
 ---
 
@@ -163,33 +163,33 @@ cd extension
 npm run dev
 ```
 
-Vite akan memonitor perubahan file dan otomatis rebuild. Setelah rebuild, reload extension di `chrome://extensions` dengan klik tombol **↺ refresh** pada card extension.
+Vite will watch for file changes and automatically rebuild. After rebuilding, reload the extension at `chrome://extensions` by clicking the **↺ refresh** button on the extension card.
 
 ---
 
-## Konfigurasi AI (Opsional)
+## AI Configuration (Optional)
 
-Extension berfungsi penuh **tanpa API key** menggunakan SEO Heuristik Engine bawaan.
+The extension works fully **without an API key** using the built-in SEO Heuristic Engine.
 
-Untuk analisis AI yang lebih mendalam dengan **DeepSeek**:
+For deeper AI analysis with **DeepSeek**:
 
-1. Klik ikon extension → Tab **API**
-2. Masukkan DeepSeek API key (`sk-...`)
-3. Klik **Simpan & Terapkan**
+1. Click the extension icon → **API** tab
+2. Enter your DeepSeek API key (`sk-...`)
+3. Click **Save & Apply**
 
-Dapatkan API key di: [platform.deepseek.com](https://platform.deepseek.com)
+Get your API key at: [platform.deepseek.com](https://platform.deepseek.com)
 
 ---
 
 ## Popup Tabs
 
-| Tab        | Fungsi                                          |
-| ---------- | ----------------------------------------------- |
-| **Skor**   | Score ring animasi, quick checks, AI quick wins |
-| **AI**     | Laporan rekomendasi prioritized + code snippets |
-| **Detail** | Tabel lengkap semua metrik SEO                  |
-| **Chat**   | AI copilot berbasis konteks halaman             |
-| **API**    | Konfigurasi DeepSeek API key                    |
+| Tab        | Function                                              |
+| ---------- | ----------------------------------------------------- |
+| **Score**  | Animated score ring, quick checks, AI quick wins      |
+| **AI**     | Prioritized recommendation report + code snippets     |
+| **Detail** | Full table of all SEO metrics                         |
+| **Chat**   | AI copilot based on page context                      |
+| **API**    | DeepSeek API key configuration                        |
 
 ---
 
